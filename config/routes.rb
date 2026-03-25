@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
-  root to: 'tasks#index'
   devise_for :users
-  resources :tasks, only: :index
+  resources :tasks do
+    collection do
+      get :morning
+    end
+    member do
+      patch :archive  # これにより archive_task_path(task) が使えるようになります 
+    end
+  end
+  root "tasks#index" 
 end

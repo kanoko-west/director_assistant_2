@@ -5,26 +5,41 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-<div class="bg-gray-50 min-h-screen text-gray-800">
+    <body>
+      <div class="bg-gray-50 min-h-screen text-gray-800">
 
-    <header class="app-header">
-        <div class="header-container">
-            <h1 class="app-logo">Director's Assistant</h1>
-            <div class="dash-board">ダッシュボード</div>
-            <div class="text-sm font-medium text-gray-600">佐藤 健一 さん</div>
-        </div>
-    </header>
-  <body>
+        <header class="app-header">
+            <div class="header-container">
+                <h1 class="app-logo" href="/">Director's Assistant </h1>
+                
+                <a class="dash-board" href="/">ダッシュボード</a>
+                <a class= "morning-view" href="/tasks/morning">morning view</a>
+                <% if user_signed_in? %>
+                <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete } %>
+                <% else %>
+                <%= link_to "ログイン", new_user_session_path, class: "post" %>
+                <%= link_to "新規登録", new_user_registration_path, class: "post" %>
+                <% end %>            
 
-    <%= yield %>
+                <div class="text-sm font-medium text-gray-600">
+                <% if user_signed_in? %>
+                  <%= current_user.name %>
+                <% end %>
+            </div>
+        </header>
+ 
 
-    <footer>
-      <p>
-        Copyright Director's Assistant 2026.
-      </p>
-    </footer>
+        <%= yield %>
+
+        <footer>
+          <p>
+            Copyright Director's Assistant 2026.
+          </p>
+        </footer>
+      </div>
     </body>
 </html>
