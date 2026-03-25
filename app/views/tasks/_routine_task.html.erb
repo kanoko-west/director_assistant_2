@@ -1,0 +1,44 @@
+<%# app/views/tasks/_routine_task.html.erb %>
+
+<%= turbo_frame_tag dom_id(task) do %>
+  <%# 
+    背景を薄い水色(#f0f9ff)に、枠線を少し濃い水色(#e0f2fe)に変更。
+    完了(done)時は、さらに背景を薄くして透明度を下げます。
+  %>
+  <div style="padding: 1rem; 
+              background-color: <%= task.done? ? '#f8fafc' : '#f0f9ff' %>; 
+              border: 1px solid #e0f2fe; 
+              border-radius: 1rem; 
+              display: flex; 
+              justify-content: space-between; 
+              align-items: center; 
+              margin-bottom: 0.75rem;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+              transition: all 0.3s ease;
+              <%= 'opacity: 0.6; filter: grayscale(30%);' if task.done? %>">
+    
+    <div style="flex: 1;">
+      <%# 文字色は濃いネイビー(#1e293b)で読みやすく %>
+      <span style="color: #1e293b; font-weight: 600; font-size: 1rem;">
+        <%= task.title %>
+      </span>
+    </div>
+    
+    <div style="display: flex; background-color: #f1f5f9; padding: 0.3rem; border-radius: 0.75rem; gap: 0.3rem;">
+      <%# --- 未着手ボタン --- %>
+      <%= link_to "未着手", update_status_task_path(task, status: "todo"), data: { turbo_method: :patch }, 
+          style: "padding: 0.3rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: bold; text-decoration: none; transition: 0.2s; " + 
+                 (task.todo? ? "background-color: #ef4444; color: white; box-shadow: 0 2px 4px rgba(239,68,68,0.3);" : "color: #94a3b8;") %>
+      
+      <%# --- 進行中ボタン --- %>
+      <%= link_to "進行中", update_status_task_path(task, status: "doing"), data: { turbo_method: :patch }, 
+          style: "padding: 0.3rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: bold; text-decoration: none; transition: 0.2s; " + 
+                 (task.doing? ? "background-color: #f59e0b; color: white; box-shadow: 0 2px 4px rgba(245,158,11,0.3);" : "color: #94a3b8;") %>
+      
+      <%# --- 完了ボタン --- %>
+      <%= link_to "完了", update_status_task_path(task, status: "done"), data: { turbo_method: :patch }, 
+          style: "padding: 0.3rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: bold; text-decoration: none; transition: 0.2s; " + 
+                 (task.done? ? "background-color: #10b981; color: white; box-shadow: 0 2px 4px rgba(16,185,129,0.3);" : "color: #94a3b8;") %>
+    </div>
+  </div>
+<% end %>

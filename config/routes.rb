@@ -3,9 +3,11 @@ Rails.application.routes.draw do
   resources :tasks do
     collection do
       get :morning
+      get :master
     end
     member do
-      patch :archive  # これにより archive_task_path(task) が使えるようになります 
+      patch :archive
+      patch :update_status
     end
   end
   root "tasks#index" 

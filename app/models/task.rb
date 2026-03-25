@@ -3,8 +3,10 @@ belongs_to :user
 
   # 必須入力の項目のみ指定
   validates :title, presence: true
-  validates :source_type, presence: true
-  validates :due_date, presence: true
+  
+  # 日常業務（is_routine: true）ではない場合のみ、必須にする
+  validates :source_type, presence: true, unless: :is_routine
+  validates :due_date, presence: true, unless: :is_routine
 
   # 真偽値（Boolean）のチェックは inclusion を使うのが Rails の定石
   validates :is_today, inclusion: { in: [true, false] }
@@ -16,4 +18,6 @@ belongs_to :user
     return "期限なし" if due_date.blank?
     due_date.strftime("%Y/%m/%d")
   end
+
+  enum status: { todo: 0, doing: 1, done: 2 }
 end
