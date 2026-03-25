@@ -1,10 +1,91 @@
-<div class="contents row">
-  <% @tasks.each do |task| %>
-    <div class="content_post" >
-      <p><%= task.text %></p>
-      <span class="name">
-        <%= task.name %>
-      </span>
-    </div>
-  <% end %>
+<main class="app-main-content">
+        <!-- 1. 爆速タスク登録 -->
+        <section class="section-quick-input">
+            <h2 class="font-bold mb-4 flex items-center gap-2">⚡ 爆速タスク登録</h2>
+            <div id="new_task_form" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <select id="task-source" class="input-select-dark">
+                    <option value="Slack">Slackより</option>
+                    <option value="会議">口頭・会議</option>
+                    <option value="メール">メール</option>
+                </select>
+                <select id="task-due-date" class="input-select-dark">
+                    <option value="本日">本日まで</option>
+                    <option value="明日">明日まで</option>
+                    <option value="明後日以降">明後日以降</option>
+                </select>
+                <input type="text" id="task-input" placeholder="タスク名を入力..." class="input-text-dark ">
+                <button onclick="handleAddTask()" class="bg-white text-indigo-600 font-bold py-2 rounded-lg hover:bg-indigo-50 transition-colors">登録</button>
+                            </div>
+        </section>
+
+        <!-- 2. 今日の注力タスク -->
+        <section class="mb-10">
+            <div class="flex justify-between items-end mb-4">
+                <h2 class="text-xl font-bold">☀️ 朝の3分ビュー</h2>
+                <span class="text-xs text-gray-400">優先順位 A-C</span>
+            </div>
+            <div id="tasks_container" class="space-y-3">
+                <!-- JSでタスクが生成されます -->
+            </div>
+        </section>
+
+        <!-- 3. 日常業務進行状況 -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-4">🔄 日常業務進行状況</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="routine-card">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-bold text-gray-700">数値チェック</h4>
+                            <p class="text-[10px] text-gray-400">毎日 10:00まで</p>
+                        </div>
+                        <button onclick="addRoutine('数値チェック')" class="btn-routine">追加</button>
+                    </div>
+                    <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-indigo-400 h-full w-1/3"></div>
+                    </div>
+                </div>
+                <div class="routine-card">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-bold text-gray-700">メール/Slack返信</h4>
+                            <p class="text-[10px] text-gray-400">随時</p>
+                        </div>
+                        <button onclick="addRoutine('連絡対応')" class="btn-routine">追加</button>
+                    </div>
+                    <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-green-400 h-full w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. アーカイブ済み -->
+        <section class="mb-10 pt-6 border-t border-gray-200">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-400 italic">📦 アーカイブ済み</h2>
+                <button class="text-[10px] text-gray-400 hover:text-gray-600">すべて表示</button>
+            </div>
+            <div id="archive-list" class="space-y-2 opacity-60">
+                <!-- 完了したタスクがここに移動します -->
+            </div>
+        </section>
+
+        <!-- 5. 完了報告生成 -->
+        <section class="section-report-gen">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-indigo-300 font-bold">✨ 報告サマリー生成</h2>
+                <div class="flex gap-2">
+                    <button onclick="generateReport()" class="bg-indigo-600 text-xs px-4 py-1.5 rounded font-bold hover:bg-indigo-500 transition">生成</button>
+                    <button onclick="copyToClipboard()" class="bg-gray-700 text-xs px-4 py-1.5 rounded font-bold hover:bg-gray-600 transition">コピー</button>
+                </div>
+            </div>
+            <div id="report-output" class="report-display text-gray-400">
+                タスクを完了させてください。
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast-popup"></div>
+
 </div>
