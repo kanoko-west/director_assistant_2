@@ -1,0 +1,20 @@
+<%# app/views/tasks/_form_quick_input.html.erb %>
+<%# ローカル変数 'task' を使うように書き換えるのがコツです %>
+
+<%= form_with(model: task, class: "quick-input-form", id: "new_task_form") do |f| %>
+  <%= f.select :source_type, 
+      [["Slackより", "Slack"], ["口頭・会議", "会議"], ["メール", "メール"]], 
+      {}, 
+      { class: "input-select-dark" } 
+  %>
+
+  <%= f.select :due_date, 
+      [["本日まで", "today"], ["明日まで", "tomorrow"], ["明後日以降", "later"]], 
+      {}, 
+      { class: "input-select-dark" } 
+  %>
+
+  <%= f.text_field :title, placeholder: "タスク名を入力...", class: "input-text-dark", autocomplete: "off" %>
+
+  <%= f.submit "登録", class: "submit-button-inline" %>
+<% end %>

@@ -1,32 +1,23 @@
 <main class="app-main-content">
         <!-- 1. 爆速タスク登録 -->
-        <section class="section-quick-input">
-          <h2 class="font-bold mb-4 flex items-center gap-2">⚡ 爆速タスク登録</h2>
-        <div id="new_task_form">
-        <select class="input-select-dark">
-            <option value="Slack">Slackより</option>
-            <option value="会議">口頭・会議</option>
-            <option value="メール">メール</option>
-        </select>
-        <select class="input-select-dark">
-            <option value="本日">本日まで</option>
-            <option value="明日">明日まで</option>
-            <option value="明後日以降">明後日以降</option>
-        </select>
-        <input type="text" id="task-input" placeholder="タスク名を入力..." class="input-text-dark">
-        <button onclick="handleAddTask()">登録</button>
-        </div>
-        </section>
+<section class="section-quick-input">
+  <h2 class="font-bold mb-4 flex items-center gap-2">⚡ 爆速タスク登録</h2>
+  
+  <div id="new_task_form_container">
+    <%= render "form_quick_input", task: @task %>
+  </div>
+</section>
 
         <!-- 2. タスク一覧 -->
         <section class="mb-10">
-            <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xl font-bold">🔄 TO DO LIST</h2>
-                <span class="text-xs text-gray-400">優先順位 A-C</span>
-            </div>
-            <div id="tasks_container" class="space-y-3">
-                <!-- JSでタスクが生成されます -->
-            </div>
+        <div class="flex justify-between items-end mb-4">
+            <h2 class="text-xl font-bold">🔄 TO DO LIST</h2>
+             <span class="text-xs text-gray-400">優先順位 A-C</span>
+        </div>
+        <div id="tasks_container" class="space-y-3">
+            <%# 優先順位順などでソートしたタスクを表示 %>
+            <%= render @tasks %> 
+        </div>
         </section>
 
         <!-- 3. 日常業務進行状況 -->

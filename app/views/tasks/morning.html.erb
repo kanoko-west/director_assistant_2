@@ -21,13 +21,15 @@
 
         <!-- 2. 今日の注力タスク -->
         <section class="mb-10">
-            <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xl font-bold">☀️ 朝の3分ビュー</h2>
-                <span class="text-xs text-gray-400">優先順位 A-C</span>
-            </div>
-            <div id="tasks_container" class="space-y-3">
-                <!-- JSでタスクが生成されます -->
-            </div>
+        <div class="flex justify-between items-end mb-4">
+            <h2 class="text-xl font-bold">☀️ 朝の3分ビュー</h2>
+            <span class="text-xs text-gray-400">優先順位 A-C</span>
+        </div>
+
+        <div id="tasks_container" class="space-y-3">
+            <%# 優先順位順などでソートしたタスクを表示 %>
+            <%= render @tasks %> 
+        </div>
         </section>
 
         <!-- 3. 日常業務進行状況 -->
