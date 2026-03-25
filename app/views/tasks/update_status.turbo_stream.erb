@@ -1,0 +1,8 @@
+<%# 
+  更新されたタスク（@task）の情報を、
+  _routine_task.html.erb という部品を使って
+  画面上の同じIDを持つ場所へ「置換（replace）」します。
+%>
+<%= turbo_stream.replace dom_id(@task) do %>
+  <%= render partial: 'routine_task', locals: { task: @task } %>
+<% end %>
