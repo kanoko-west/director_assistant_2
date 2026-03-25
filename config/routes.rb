@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  root to: 'tasks#index'
   devise_for :users
-  resources :tasks, only: :index
+  resources :tasks do
+    collection do
+      get :morning 
+    end
+  end
+  root "tasks#index" 
 end
