@@ -2,8 +2,9 @@
   <div class="task-card">
     <div class="task-content">
       <div class="task-check-wrapper">
-        <%= form_with(model: task) do |f| %>
-          <%= f.check_box :completed, onchange: "this.form.requestSubmit()", class: "task-checkbox" %>
+        <%# 送信先を archive_task_path に指定し、method を patch にします %>
+        <%= form_with(model: task, url: archive_task_path(task), method: :patch) do |f| %>
+          <%= f.check_box :archived, onchange: "this.form.requestSubmit()", class: "task-checkbox" %>
         <% end %>
       </div>
 

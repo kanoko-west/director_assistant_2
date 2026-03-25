@@ -81,6 +81,16 @@ end
     end
   end
 
+  def archive
+  @task = current_user.tasks.find(params[:id])
+  @task.update(archived: true)
+
+  respond_to do |format|
+    format.html { redirect_to tasks_path }
+    format.turbo_stream # これが必要！
+  end
+end
+
   private
 
   def set_task
