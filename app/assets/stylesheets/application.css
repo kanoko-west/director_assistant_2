@@ -340,3 +340,29 @@
 }
 
 .toast-popup.is-visible { opacity: 1; }
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-button {
+  font-size: 12px;
+  color: #94a3b8; /* gray-400 */
+  text-decoration: none;
+}
+
+.delete-button-task {
+  font-size: 12px;
+  color: #94a3b8; /* red-400 */
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.delete-button-task:hover {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #ef4444;
+}
