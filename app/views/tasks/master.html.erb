@@ -17,26 +17,28 @@
   </div>
 
   <%# 現在のマスター一覧（削除もできるようにすると便利） %>
-  <div class="bg-gray-900 rounded-lg overflow-hidden">
-    <table class="w-full text-left">
-      <thead class="bg-gray-600 text-white font-bold border-b border-gray-500">
-        <tr>
-          <th class="p-4">業務名</th>
-          <th class="p-4 text-right">操作</th>
+<div class="master-list-wrapper">
+  <table class="master-table">
+    <thead>
+      <tr>
+        <th>業務名</th>
+        <th class="text-right">操作</th>
+      </tr>
+    </thead>
+    <tbody id="master_routine_list">
+      <% @routine_tasks.each do |task| %>
+        <tr id="<%= dom_id(task) %>" class="master-table-row">
+          <td class="task-title-cell"><%= task.title %></td>
+          <td class="action-cell">
+            <%= link_to "削除", task_path(task), 
+                data: { turbo_method: :delete, turbo_confirm: "この日常業務を削除しますか？" }, 
+                class: "btn-delete" %>
+          </td>
         </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-800">
-        <% @routine_tasks.each do |task| %>
-          <tr>
-            <td class="p-4 text-white"><%= task.title %></td>
-            <td class="p-4 text-right">
-              <%= link_to "削除", task_path(task), data: { turbo_method: :delete, turbo_confirm: "この日常業務を削除しますか？" }, class: "text-red-400 hover:text-red-300" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
   <div class="mt-6">
     <%= link_to "← ダッシュボードへ戻る", tasks_path, class: "text-gray-400 hover:underline" %>

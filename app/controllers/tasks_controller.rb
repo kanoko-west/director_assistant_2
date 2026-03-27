@@ -143,6 +143,16 @@ def master
   @task = current_user.tasks.build(is_routine: true)
 end
 
+def destroy
+  @task = current_user.tasks.find(params[:id])
+  @task.destroy
+
+  respond_to do |format|
+    format.turbo_stream # 削除した瞬間に画面から消す命令を送る
+    format.html { redirect_to master_tasks_path, notice: "削除しました" }
+  end
+end
+
   private
 
   def set_task
