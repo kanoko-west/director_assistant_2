@@ -22,9 +22,16 @@
 
 
         <!-- 3. 日常業務進行状況 -->
-        <section class="routine-section mb-10">
-        <h2 class="text-xl font-bold mb-4">🔄 日常業務進行状況</h2>
-        <div id="routine_tasks_container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <section class="routine-section">
+        <div class="routine-header">
+            <h2 class="routine-title">🔄 日常業務進行状況</h2>
+            
+            <%= link_to master_tasks_path, class: "master-link" do %>
+            ＋追加・編集
+            <% end %>
+        </div>
+
+        <div id="routine_tasks" class="routine-grid">
             <%= render partial: 'routine_task', collection: @routine_tasks, as: :task %>
         </div>
         </section>
