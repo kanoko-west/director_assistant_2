@@ -1,7 +1,18 @@
-<%# 1. tasks_container の先頭に、新しく作ったタスクを表示する %>
-<%= turbo_stream.prepend "tasks_container", partial: "tasks/task", locals: { task: @task } %>
-
-<%# 2. フォームの中身を空にして、次の入力に備える %>
+<%# 1. フォームを空にする（これは常に実行） %>
 <%= turbo_stream.replace "new_task_form_container" do %>
-  <%= render "form_quick_input", task: Task.new %>
+  <%= render "form_quick_input", task: current_user.tasks.build %>
+<% end %>
+
+<%# 2. 【重要】@task.is_today が true の時だけ画面に追加する %>
+<% if @task.is_today %>
+  <%= turbo_stream.prepend "tasks_container" do %>
+    <%= render @task %>
+  <% end %>
+<% end %>
+
+<%# 3. 通知を表示 %>
+<%= turbo_stream.append "toast" do %>
+  <div class="toast-message">
+    <%= @task.is_today ? "☀️ 今日のリストに追加しました" : "📅 明日以降のタスクとして保存しました" %>
+  </div>
 <% end %>
