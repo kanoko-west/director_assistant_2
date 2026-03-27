@@ -196,7 +196,110 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
 }
+/* アーカイブセクション全体 */
+.archive-section {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
 
+.archive-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.archive-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 0;
+}
+
+/* 日付選択フォーム */
+.date-filter-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-right: 0.5rem;
+}
+
+.date-input {
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.8rem;
+  color: #475569;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* 完了済みタスクのリスト項目 */
+.archive-list {
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* アーカイブアイテム内のレイアウト調整 */
+.archive-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background-color: white;
+  border: 1px solid #f1f5f9;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.archive-item-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 復帰ボタンのスタイル */
+.restore-button {
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: bold;
+  color: #3b82f6;
+  background-color: #eff6ff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #dbeafe;
+  transition: all 0.2s;
+}
+
+.restore-button:hover {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.archive-item-title {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.archive-item-time {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+/* データがない時の表示 */
+.archive-empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: #cbd5e1;
+  border: 1px dashed #e2e8f0;
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+}
 /* --- 報告生成 & トースト --- */
 .section-report-gen {
     background-color: #4f46e5;

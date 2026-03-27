@@ -4,17 +4,21 @@ class TasksController < ApplicationController
 
   # 業務ダッシュボード: すべての進行中タスクとアーカイブを表示
   def index
-# 1. 日常ルーチン業務（アーカイブされておらず、かつ日常業務フラグが真のもの）
-  @routine_tasks = current_user.tasks.where(archived: false, is_routine: true).order(:id)
+    @selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
 
-  # 2. 進行中の一般タスク（アーカイブされておらず、かつ日常業務フラグが偽のもの）
-  @tasks = current_user.tasks.where(archived: false, is_routine: false).order(created_at: :desc)
+    # 1. ルーチン（進行中）
+    @routine_tasks = current_user.tasks.where(archived: false, is_routine: true).order(:id)
 
-  # 3. アーカイブ済みのタスク（ここは今まで通り。必要に応じて is_routine で分けてもOK）
-  @archived_tasks = current_user.tasks.where(archived: true).order(completed_at: :desc).limit(10)
+    # 2. TODOリスト（進行中：未完了のもの）
+    @tasks = current_user.tasks.where(archived: false, is_routine: false).order(created_at: :desc)
 
-  # 4. 登録フォーム用の空インスタンス
-  @task = Task.new
+    # 3. 完了済みログ（その日にアーカイブされた単発TODO）
+    @archived_tasks = current_user.tasks
+                                  .where(archived: true, is_routine: false)
+                                  .where(updated_at: @selected_date.all_day)
+                                  .order(updated_at: :desc)
+
+    @task = Task.new
   end
 
   # 朝の3分ビュー: 今日やるべき「A, B」優先度の高いタスクに限定
@@ -109,11 +113,25 @@ def create
 end
 
 def update_status
-  # params[:status] で送られてきた値（'todo', 'doing', 'done'など）で更新
-  if @task.update(status: params[:status])
+  @task = current_user.tasks.find(params[:id])
+  new_status = params[:status]
+
+  # ステータスを更新
+  @task.status = new_status
+  
+  # もし「完了(done)」が選ばれたら、自動的にアーカイブフラグも立てる
+  if new_status == "done"
+    @task.archived = true
+  else
+    # 「未着手」「進行中」に戻されたらアーカイブを解除する
+    @task.archived = false
+  end
+
+  if @task.save
+    # Turbo Streamで画面の一部だけを書き換える（今のルーチンと同じ動き）
     respond_to do |format|
-      format.turbo_stream # これで _routine_task.html.erb の表示を部分更新します
-      format.html { redirect_to tasks_path }
+      format.turbo_stream
+      format.html { redirect_to root_path }
     end
   end
 end

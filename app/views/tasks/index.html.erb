@@ -37,16 +37,44 @@
         </section>
 
         <!-- 4. アーカイブ済み -->
-        <section class="mb-10 pt-6 border-t border-gray-200">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-gray-400 italic">📦 アーカイブ済み</h2>
-                <button class="text-[10px] text-gray-400 hover:text-gray-600">すべて表示</button>
-            </div>
-            <div id="archive-list" class="space-y-2 opacity-60">
-                <!-- 完了したタスクがここに移動します -->
-            </div>
-        </section>
+        <section class="archive-section">
+        
+        <div class="archive-header">
+            <h2 class="archive-title">📦 完了済み</h2>
+            
+            <%= form_with url: root_path, method: :get, local: true, class: "date-filter" do |f| %>
+            <span class="date-filter-label">表示日:</span>
+            <%= f.date_field :date, 
+                value: @selected_date, 
+                min: 1.months.ago.to_date, 
+                max: Date.today, 
+                onchange: "this.form.submit();",
+                class: "date-input" %>
+            <% end %>
+        </div>
 
+        <div id="archive-list" class="archive-list">
+        <% if @archived_tasks.any? %>
+            <% @archived_tasks.each do |task| %>
+            <div class="archive-item" id="<%= dom_id(task) %>">
+                <div class="archive-item-content">
+                <span class="archive-item-title"><%= task.title %></span>
+                <span class="archive-item-time"><%= task.updated_at.strftime("%H:%M") %> 完了</span>
+                </div>
+
+                <%# 戻すボタンを追加 %>
+                <%= link_to "元に戻す", update_status_task_path(id: task.id, status: "todo"), 
+                    data: { turbo_method: :patch }, 
+                    class: "restore-button" %>
+            </div>
+            <% end %>
+        <% else %>
+            <div class="archive-empty">
+            <%= @selected_date.strftime("%m/%d") %> の完了タスクはありません
+            </div>
+        <% end %>
+        </div>
+    </section>
         <!-- 5. 完了報告生成 -->
         <section class="section-report-gen">
             <div class="flex justify-between items-center mb-4">
