@@ -13,14 +13,16 @@
       <span class="text-xs text-gray-400">注力フラグ: ON</span>
     </div>
 
-    <div id="tasks_container" class="space-y-3">
-    <%# 必ず @today_tasks を使う（@tasks ではない） %>
-    <% if @today_tasks.any? %>
-        <%= render @today_tasks %> 
+  <div id="tasks_container" class="space-y-3">
+    <%# persisted（保存済み）のタスクが1つでもあるか？ %>
+    <% if @today_tasks.reject(&:new_record?).any? %>
+      <%= render @today_tasks %> 
     <% else %>
+      <div id="empty_message" class="py-4 text-center">
         <p class="text-gray-500 text-sm">今日が期限のタスクはありません。</p>
+      </div>
     <% end %>
-    </div>
+  </div>
   </section>
 
   <section class="mb-10 pt-6 border-t border-gray-200">
@@ -35,7 +37,7 @@
           <div class="archive-item" id="<%= dom_id(task) %>">
             <div class="archive-item-content">
               <span class="archive-item-title"><%= task.title %></span>
-              <span class="archive-item-time"><%= task.updated_at.strftime("%H:%M") %> 完了</span>
+              <span class="archive-item-time"><%= task.completed_at.strftime("%H:%M") %> 完了</span>
             </div>
             <%= link_to "元に戻す", update_status_task_path(task, status: "todo"), 
                 data: { turbo_method: :patch }, 

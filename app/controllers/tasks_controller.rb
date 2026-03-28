@@ -23,18 +23,18 @@ class TasksController < ApplicationController
 
   # 朝の3分ビュー: 今日やるべき「A, B」優先度の高いタスクに限定
 def morning
-  # 1. 今日の注力タスク
-  # 条件：未完了(archived: false) かつ 期限が今日まで(due_date <= 今日)
+  # 今日の注力タスク（未完了かつ期限が今日まで）
   @today_tasks = current_user.tasks
                              .where(archived: false)
                              .where("due_date <= ?", Date.today)
-                             .order(priority: :asc, due_date: :asc)
-  
-  # 2. 昨日完了したログ (昨日 0:00〜23:59 に更新されたもの)
+                             .order(priority: :asc)
+
+  # 昨日完了したログ（「今日」よりも前に完了したものだけ）
   @yesterday_archived_tasks = current_user.tasks
                                          .where(archived: true)
-                                         .where(updated_at: Date.yesterday.all_day)
-                                         .order(updated_at: :desc)
+                                         .where("completed_at < ?", Time.zone.now.beginning_of_day) # 今日の0:00より前
+                                         .where("completed_at >= ?", Time.zone.now.yesterday.beginning_of_day) # 昨日の0:00以降
+                                         .order(completed_at: :desc)
                                          
   @task = current_user.tasks.build
 end
@@ -115,7 +115,7 @@ def create
   end
 
   def archive
-  @task.update(archived: true)
+    @task.update(archived: true, completed_at: Time.current)
 
   respond_to do |format|
     format.html { redirect_to tasks_path }
