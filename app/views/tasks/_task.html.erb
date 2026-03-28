@@ -16,9 +16,13 @@
         <p class="task-deadline"><%= task.due_date %></p>
       </div>
     </div>
-
     <div class="task-actions">
-      <%= link_to "編集", edit_task_path(task), class: "edit-link" %>
+      <%= link_to "編集", edit_task_path(task), class: "edit-button" %>
+
+    <%# --- 削除ボタンを追加 --- %>
+      <%= link_to "削除", task_path(task), 
+        data: { turbo_method: :delete, turbo_confirm: "このタスクを完全に削除しますか？" }, 
+        class: "delete-button-task" %>
     </div>
-  </div>
+   </div>
 <% end %>

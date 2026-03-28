@@ -301,24 +301,24 @@
   font-size: 0.8rem;
 }
 /* --- 報告生成 & トースト --- */
-.section-report-gen {
-    background-color: #4f46e5;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    color: white;
-    margin-top: 3rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+/* 報告サマリーの表示エリア */
+.report-display {
+  background-color: #1f2937; /* gray-800 */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-family: monospace; /* 等幅フォントで報告書らしく */
+  white-space: pre-wrap;  /* 改行を維持 */
+  min-height: 100px;
+  border: 1px solid #374151;
+  color: #d1d5db !important; /* text-gray-300 */
 }
 
-.report-display {
-    background-color: #6366f1;
-    padding: 1.25rem;
-    border-radius: 0.75rem;
-    font-family: 'ui-monospace', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
-    font-size: 0.875rem;
-    min-height: 5rem;
-    white-space: pre-wrap;
-    line-height: 1.6;
+.section-report-gen {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #111827; /* gray-900 */
+  border-radius: 0.75rem;
+  border: 1px dashed #4f46e5; /* indigo-600 */
 }
 
 .toast-popup {
@@ -340,3 +340,29 @@
 }
 
 .toast-popup.is-visible { opacity: 1; }
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-button {
+  font-size: 12px;
+  color: #94a3b8; /* gray-400 */
+  text-decoration: none;
+}
+
+.delete-button-task {
+  font-size: 12px;
+  color: #94a3b8; /* red-400 */
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.delete-button-task:hover {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #ef4444;
+}
