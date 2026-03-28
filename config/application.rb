@@ -21,7 +21,11 @@ module DirectorAssistant2
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    # 1. Rails内部（Time.zoneなど）を日本時間にする
+    config.time_zone = 'Tokyo'
+
+    # 2. データベース（Active Record）に保存する時間も日本時間にする
+    config.active_record.default_timezone = :local
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
