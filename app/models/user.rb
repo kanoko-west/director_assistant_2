@@ -1,11 +1,8 @@
 class User < ApplicationRecord
-  before_validation :set_group
-
-  def set_group
-    self.group_id ||= 1
-  end
+  belongs_to :group, optional: true
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
   has_many :tasks
 end
