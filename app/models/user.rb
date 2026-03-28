@@ -1,8 +1,13 @@
 class User < ApplicationRecord
-  belongs_to :group, optional: true
+  before_validation :set_group
+  belongs_to :group
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   has_many :tasks
+
+  def set_group
+    self.group ||= Group.first || Group.create!(name: "デフォルトグループ")
+  end
 end
