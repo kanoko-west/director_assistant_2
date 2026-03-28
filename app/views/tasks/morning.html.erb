@@ -26,40 +26,31 @@
             <span class="text-xs text-gray-400">優先順位 A-C</span>
         </div>
 
-        <div id="tasks_container" class="space-y-3">
-            <%# 優先順位順などでソートしたタスクを表示 %>
-            <%= render @tasks %> 
-        </div>
-        </section>
+  <div id="tasks_container" class="space-y-3">
+    <%# persisted（保存済み）のタスクが1つでもあるか？ %>
+    <% if @today_tasks.reject(&:new_record?).any? %>
+      <%= render @today_tasks %> 
+    <% else %>
+      <div id="empty_message" class="py-4 text-center">
+        <p class="text-gray-500 text-sm">今日が期限のタスクはありません。</p>
+      </div>
+    <% end %>
+  </div>
+  </section>
 
-        <!-- 3. 日常業務進行状況 -->
-        <section class="mb-10">
-            <h2 class="text-xl font-bold mb-4">🔄 日常業務進行状況</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="routine-card">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h4 class="font-bold text-gray-700">数値チェック</h4>
-                            <p class="text-[10px] text-gray-400">毎日 10:00まで</p>
-                        </div>
-                        <button onclick="addRoutine('数値チェック')" class="btn-routine">追加</button>
-                    </div>
-                    <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-indigo-400 h-full w-1/3"></div>
-                    </div>
-                </div>
-                <div class="routine-card">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h4 class="font-bold text-gray-700">メール/Slack返信</h4>
-                            <p class="text-[10px] text-gray-400">随時</p>
-                        </div>
-                        <button onclick="addRoutine('連絡対応')" class="btn-routine">追加</button>
-                    </div>
-                    <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-green-400 h-full w-2/3"></div>
-                    </div>
-                </div>
+  <section class="mb-10 pt-6 border-t border-gray-200">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-bold text-gray-400 italic">📦 昨日 (<%= Date.yesterday.strftime("%m/%d") %>) の完了ログ</h2>
+      <%= link_to "すべて表示", tasks_path, class: "text-[10px] text-gray-400 hover:text-gray-600" %>
+    </div>
+    
+    <div id="archive-list" class="space-y-2 opacity-60">
+      <% if @yesterday_archived_tasks.any? %>
+        <% @yesterday_archived_tasks.each do |task| %>
+          <div class="archive-item" id="<%= dom_id(task) %>">
+            <div class="archive-item-content">
+              <span class="archive-item-title"><%= task.title %></span>
+              <span class="archive-item-time"><%= task.completed_at.strftime("%H:%M") %> 完了</span>
             </div>
         </section>
 

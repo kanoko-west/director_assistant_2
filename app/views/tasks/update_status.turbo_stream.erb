@@ -1,4 +1,4 @@
-<%# 1. 日常業務（ルーチン）の場合 %>
+<%# 1. ルーチンの場合はその場で表示更新 %>
 <% if @task.is_routine? %>
   <%= turbo_stream.replace dom_id(@task) do %>
     <%= render partial: 'routine_task', locals: { task: @task } %>
@@ -7,24 +7,37 @@
 <%# 2. 単発TODOの場合 %>
 <% else %>
   <% if @task.archived %>
-    <%# --- 完了した時：TODOから消してアーカイブへ --- %>
+    <%# --- 完了した時：現在のリストから消す（共通） --- %>
     <%= turbo_stream.remove dom_id(@task) %>
-    <%= turbo_stream.prepend "archive-list" do %>
-      <%# ここを @task に統一します %>
-      <div class="archive-item" id="<%= dom_id(@task) %>">
-        <div class="archive-item-content">
-          <span class="archive-item-title"><%= @task.title %></span>
-          <span class="archive-item-time"><%= @task.updated_at.strftime("%H:%M") %> 完了</span>
+
+    <%# --- 【修正ポイント】完了時間が「昨日」ならログに追加する --- %>
+    <% if @task.completed_at.present? && Date.yesterday.all_day.cover?(@task.completed_at) %>
+      <%= turbo_stream.prepend "archive-list" do %>
+        <div class="archive-item" id="<%= dom_id(@task) %>">
+          <div class="archive-item-content">
+            <span class="archive-item-title"><%= @task.title %></span>
+            <span class="archive-item-time"><%= @task.completed_at.strftime("%H:%M") %> 完了</span>
+          </div>
+          <%= link_to "元に戻す", update_status_task_path(@task, status: "todo"), 
+              data: { turbo_method: :patch }, 
+              class: "restore-button" %>
         </div>
-        <%= link_to "元に戻す", update_status_task_path(@task, status: "todo"), 
-            data: { turbo_method: :patch }, 
-            class: "restore-button" %>
-      </div>
+      <% end %>
+    <% end %>
+
+    <%# 今日のリストが空になったら「ありません」を出す %>
+    <% if current_user.tasks.where(archived: false).where("due_date <= ?", Date.today).count == 0 %>
+      <%= turbo_stream.update "tasks_container" do %>
+        <div id="empty_message" class="py-4 text-center">
+          <p class="text-gray-500 text-sm">今日が期限のタスクはありません。</p>
+        </div>
+      <% end %>
     <% end %>
 
   <% else %>
-    <%# --- 復帰させた時：アーカイブから消してTODOリストへ --- %>
+    <%# --- 復帰させた時：ログから消して今日のリストへ戻す --- %>
     <%= turbo_stream.remove dom_id(@task) %>
+    <%= turbo_stream.remove "empty_message" %>
     <%= turbo_stream.prepend "tasks_container" do %>
       <%= render @task %>
     <% end %>

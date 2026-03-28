@@ -1,7 +1,21 @@
-<%# 1. tasks_container の先頭に、新しく作ったタスクを表示する %>
-<%= turbo_stream.prepend "tasks_container", partial: "tasks/task", locals: { task: @task } %>
-
-<%# 2. フォームの中身を空にして、次の入力に備える %>
+<%# 1. フォームをリセット（常に実行） %>
 <%= turbo_stream.replace "new_task_form_container" do %>
-  <%= render "form_quick_input", task: Task.new %>
+  <%= render "form_quick_input", task: current_user.tasks.build %>
+<% end %>
+
+<%# 2. 「未完了」かつ「今日までが期限」のものだけを、今日のリストに表示する %>
+<% if !@task.archived && (@task.is_today || (@task.due_date.present? && @task.due_date <= Date.today)) %>
+  
+  <%# メッセージを消去（ID: empty_message をターゲットにする） %>
+  <%= turbo_stream.remove "empty_message" %>
+
+  <%# 今日のリストの先頭に追加 %>
+  <%= turbo_stream.prepend "tasks_container" do %>
+    <%= render @task %>
+  <% end %>
+<% end %>
+
+<%# 3. トースト通知 %>
+<%= turbo_stream.append "toast" do %>
+  <div class="toast-message">登録しました: <%= @task.title %></div>
 <% end %>
