@@ -42,3 +42,18 @@ window.generateReport = function() {
   reportOutput.innerText = reportText;
 };
 
+// コピー機能（先ほどと同様）
+window.copyToClipboard = function() {
+  const reportOutput = document.getElementById('report-output');
+  if (!reportOutput) return;
+
+  const text = reportOutput.innerText;
+  if (text.includes("まとめます...") || !text) {
+    alert("まずは「生成」ボタンを押してください。");
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("報告文をコピーしました！");
+  });
+};
