@@ -1,46 +1,47 @@
-<div class="container mx-auto p-6">
-  <h1 class="text-2xl font-bold mb-6">🔄 日常業務マスター登録</h1>
+<div class="routine-container">
+  <header class="routine-header">
+    <h1>🔄 日常業務マスター登録</h1>
+  </header>
 
-  <%# 登録フォーム %>
-  <div class="bg-gray-800 p-6 rounded-lg mb-8">
-    <h2 class="text-lg mb-4 text-gray-300">新しい日常業務を追加</h2>
-    <%= form_with(model: @task) do |f| %>
-      <% # hidden_field で、このフォームから送る時は必ず true にする %>
+  <%# 登録フォームエリア %>
+  <section class="routine-form-section">
+    <h2 class="section-title">新しい日常業務を追加</h2>
+    <%= form_with(model: @task, class: "routine-quick-form") do |f| %>
       <%= f.hidden_field :is_routine, value: 1 %>
       
-      <div class="flex gap-4">
-        <%= f.text_field :title, placeholder: "例：数値チェック、定例準備など", 
-            class: "flex-1 bg-gray-600 text-white font-bold border-b border-gray-500" %>
-        <%= f.submit "マスター登録", class: "bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded" %>
+      <div class="input-group">
+        <%= f.text_field :title, 
+            placeholder: "例：数値チェック、定例準備など", 
+            class: "input-text-master",
+            autocomplete: "off" %>
+        <%= f.submit "マスター登録", class: "btn-primary-master" %>
       </div>
     <% end %>
-  </div>
+  </section>
 
-  <%# 現在のマスター一覧（削除もできるようにすると便利） %>
-<div class="master-list-wrapper">
-  <table class="master-table">
-    <thead>
-      <tr>
-        <th>業務名</th>
-        <th class="text-right">操作</th>
-      </tr>
-    </thead>
-    <tbody id="master_routine_list">
-      <% @routine_tasks.each do |task| %>
-        <tr id="<%= dom_id(task) %>" class="master-table-row">
-          <td class="task-title-cell"><%= task.title %></td>
-          <td class="action-cell">
-            <%= link_to "削除", task_path(task), 
-                data: { turbo_method: :delete, turbo_confirm: "この日常業務を削除しますか？" }, 
-                class: "btn-delete" %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
-  <div class="mt-6">
-    <%= link_to "← ダッシュボードへ戻る", tasks_path, class: "text-gray-400 hover:underline" %>
-  </div>
+  <%# マスター一覧テーブル %>
+  <section class="routine-list-section">
+    <div class="table-scroll-wrapper">
+      <table class="routine-table">
+        <thead>
+          <tr>
+            <th class="col-title">業務名</th>
+            <th class="col-action">操作</th>
+          </tr>
+        </thead>
+        <tbody id="master_routine_list">
+          <% @routine_tasks.each do |task| %>
+            <tr id="<%= dom_id(task) %>">
+              <td class="task-title"><%= task.title %></td>
+              <td class="task-action">
+                <%= link_to "削除", task_path(task), 
+                    data: { turbo_method: :delete, turbo_confirm: "この日常業務を削除しますか？" }, 
+                    class: "btn-delete-text" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </div>

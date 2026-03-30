@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="task-actions">
-      <%= link_to "編集", edit_task_path(task), class: "edit-button" %>
+      <%= link_to "編集", edit_task_path(task), class: "edit-button", data: { turbo: false } %>
 
     <%# --- 削除ボタンを追加 --- %>
       <%= link_to "削除", task_path(task), 

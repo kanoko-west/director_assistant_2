@@ -76,6 +76,10 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+.input-select-dark option {
+  color: #000000;         /* 文字を黒に */
+  background-color: #ffffff; /* 選択肢の背景を白に（文字を見やすくするため） */
+}
 /* 登録ボタン */
 .submit-button-inline {
   background: none;

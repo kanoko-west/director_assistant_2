@@ -42,6 +42,11 @@ end
   def show
   end
 
+  def edit
+    @task = current_user.tasks.find(params[:id])
+  end
+
+
   def new
     @task = Task.new
   end
