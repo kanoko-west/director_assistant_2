@@ -89,7 +89,7 @@ def create
       respond_to do |format|
         # ここがポイント：is_routine なら master 画面へ、そうでなければ index へ戻す
         format.html { 
-          redirect_to (@task.is_routine ? master_tasks_path : tasks_path), notice: "登録しました" 
+          redirect_to (@task.is_routine ? master_tasks_path : tasks_path)
         }
         format.turbo_stream
       end
@@ -97,11 +97,30 @@ def create
       Rails.logger.debug "--- Task Save Error ---"
       Rails.logger.debug @task.errors.full_messages
       # 4. 失敗時：再表示に必要なデータを両方準備しておく
+      # 1. 現在表示中の日付を特定する（フォームから送られてきた日付、なければ昨日）
+    @selected_date = params[:selected_date].present? ? params[:selected_date].to_date : Date.yesterday
+    # 2. その日付に基づいた「完了済みログ」を取得（これで表示が勝手に切り替わらない）
+    @archived_tasks = current_user.tasks.where(archived: true).where(completed_at: @selected_date.all_day)
       @routine_tasks = current_user.tasks.where(is_routine: true).order(:id)
       @tasks = current_user.tasks.where(archived: false, is_routine: false).order(created_at: :desc)
+      @today_tasks = current_user.tasks
+                             .where(archived: false)
+                             .where("due_date <= ?", Date.today)
+                             .order(priority: :asc)
+      @yesterday_archived_tasks = current_user.tasks
+                  .where(archived: true)
+                  .where("completed_at < ?", Time.zone.now.beginning_of_day) # 今日の0:00より前
+                  .where("completed_at >= ?", Time.zone.now.yesterday.beginning_of_day) # 昨日の0:00以降
+                  .order(completed_at: :desc)
       
       # どちらの画面から来たかによって戻り先を変える
-      render (@task.is_routine ? :master : :index), status: :unprocessable_entity
+     view_target = case params[:from_view]
+                    when "morning" then :morning
+                    when "master"  then :master
+                    else :index
+                    end
+
+      render view_target, status: :unprocessable_entity
     end
   end
 

@@ -2,6 +2,9 @@
 <%# ローカル変数 'task' を使うように書き換えるのがコツです %>
 
 <%= form_with(model: task, class: "quick-input-form", id: "new_task_form") do |f| %>
+<%= hidden_field_tag :selected_date, @selected_date %>
+<%= hidden_field_tag :from_view, local_assigns[:from_view] || "index" %>
+
   <%= f.select :source_type, 
       [["Slackより", "Slack"], ["口頭・会議", "会議"], ["メール", "メール"]], 
       {}, 

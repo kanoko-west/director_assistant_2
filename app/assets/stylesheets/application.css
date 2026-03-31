@@ -1,4 +1,8 @@
 /* --- レイアウト & ヘッダー --- */
+/* Railsが自動生成するエラー用divをレイアウトに干渉させない */
+.field_with_errors {
+  display: contents; /* これにより、囲っているdiv自体のサイズが無視され、中の入力欄が直接親要素に従います */
+}
 .app-header {
     background-color: white;
     border-bottom: 1px solid #e5e7eb;
