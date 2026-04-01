@@ -123,6 +123,15 @@ RSpecを用いたSystem Specを中心にテストを実装しています。
 
 ---
 
+## 画面遷移図
+![画面遷移図](./images/screen-flow.png) 
+
+---
+
+## ER図
+![ER図](./images/er-diagram.png)
+
+---
 ## セットアップ
 
 ```bash
