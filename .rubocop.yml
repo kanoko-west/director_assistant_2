@@ -1,13 +1,14 @@
 AllCops:
+  NewCops: enable
 # 除外するディレクトリ（自動生成されたファイル）
 # デフォルト設定にある"vendor/**/*"が無効化されないように記述
- Exclude:
-   - "vendor/**/*" # rubocop config/default.yml
-   - "db/**/*"
-   - "config/**/*"
-   - "bin/*"
-   - "node_modules/**/*"
-   - "Gemfile"
+  Exclude:
+    - "vendor/**/*" # rubocop config/default.yml
+    - "db/**/*"
+    - "config/**/*"
+    - "bin/*"
+    - "node_modules/**/*"
+    - "Gemfile"
 
 
 # 1行あたりの文字数をチェックする

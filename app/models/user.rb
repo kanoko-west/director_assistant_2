@@ -8,8 +8,8 @@ class User < ApplicationRecord
   has_many :tasks
 
   validates :name, presence: true
-  
+
   def set_group
-    self.group ||= Group.first || Group.create!(name: "デフォルトグループ")
+    self.group ||= Group.first || Group.create!(name: 'デフォルトグループ')
   end
 end

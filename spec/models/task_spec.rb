@@ -49,18 +49,18 @@ RSpec.describe Task, type: :model do
   describe 'メソッドのテスト' do
     it 'due_at_display が正しいフォーマットで日付を返すこと' do
       @task.due_date = Date.new(2026, 3, 30)
-      expect(@task.due_at_display).to eq "2026/03/30"
+      expect(@task.due_at_display).to eq '2026/03/30'
     end
 
     it 'due_date が空の場合、due_at_display が「期限なし」を返すこと' do
       @task.due_date = nil
-      expect(@task.due_at_display).to eq "期限なし"
+      expect(@task.due_at_display).to eq '期限なし'
     end
   end
 
   describe 'ステータス（enum）のテスト' do
     it 'デフォルトが todo であること' do
-      expect(@task.status).to eq "todo"
+      expect(@task.status).to eq 'todo'
     end
 
     it 'doing, done に変更できること' do

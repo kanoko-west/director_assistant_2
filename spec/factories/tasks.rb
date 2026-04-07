@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :task do
     association :user
-    title { "テストタスク" }
-    source_type { "Slack" }
+    title { 'テストタスク' }
+    source_type { 'Slack' }
     due_date { Date.today }
     is_routine { false }
     is_today { false }

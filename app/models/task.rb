@@ -1,9 +1,9 @@
 class Task < ApplicationRecord
-belongs_to :user
+  belongs_to :user
 
   # 必須入力の項目のみ指定
   validates :title, presence: true
-  
+
   # 日常業務（is_routine: true）ではない場合のみ、必須にする
   validates :source_type, presence: true, unless: :is_routine
   validates :due_date, presence: true, unless: :is_routine
@@ -15,11 +15,10 @@ belongs_to :user
 
   # 以前作成した表示用メソッド
   def due_at_display
-    return "期限なし" if due_date.blank?
-    due_date.strftime("%Y/%m/%d")
+    return '期限なし' if due_date.blank?
+
+    due_date.strftime('%Y/%m/%d')
   end
 
   enum status: { todo: 0, doing: 1, done: 2 }
-
-  
 end

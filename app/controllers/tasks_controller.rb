@@ -22,22 +22,22 @@ class TasksController < ApplicationController
   end
 
   # 朝の3分ビュー: 今日やるべき「A, B」優先度の高いタスクに限定
-def morning
-  # 今日の注力タスク（未完了かつ期限が今日まで）
-  @today_tasks = current_user.tasks
-                             .where(archived: false)
-                             .where("due_date <= ?", Date.today)
-                             .order(priority: :asc)
+  def morning
+    # 今日の注力タスク（未完了かつ期限が今日まで）
+    @today_tasks = current_user.tasks
+                               .where(archived: false)
+                               .where('due_date <= ?', Date.today)
+                               .order(priority: :asc)
 
-  # 昨日完了したログ（「今日」よりも前に完了したものだけ）
-  @yesterday_archived_tasks = current_user.tasks
-                                         .where(archived: true)
-                                         .where("completed_at < ?", Time.zone.now.beginning_of_day) # 今日の0:00より前
-                                         .where("completed_at >= ?", Time.zone.now.yesterday.beginning_of_day) # 昨日の0:00以降
-                                         .order(completed_at: :desc)
-                                         
-  @task = current_user.tasks.build
-end
+    # 昨日完了したログ（「今日」よりも前に完了したものだけ）
+    @yesterday_archived_tasks = current_user.tasks
+                                            .where(archived: true)
+                                            .where('completed_at < ?', Time.zone.now.beginning_of_day) # 今日の0:00より前
+                                            .where('completed_at >= ?', Time.zone.now.yesterday.beginning_of_day) # 昨日の0:00以降
+                                            .order(completed_at: :desc)
+
+    @task = current_user.tasks.build
+  end
 
   def show
   end
@@ -46,77 +46,76 @@ end
     @task = current_user.tasks.find(params[:id])
   end
 
-
   def new
     @task = Task.new
   end
 
   # 爆速登録アクション
-def create
-  tp = task_params
-  @task = current_user.tasks.build(tp)
+  def create
+    tp = task_params
+    @task = current_user.tasks.build(tp)
 
     # 日常業務として登録する場合、初期値をセット
-  if @task.is_routine
-    @task.status ||= "todo"
-    @task.is_today = false # 日常業務は「今日やる」とは別に管理する場合
-    @task.archived = false
-  end
+    if @task.is_routine
+      @task.status ||= 'todo'
+      @task.is_today = false # 日常業務は「今日やる」とは別に管理する場合
+      @task.archived = false
+    end
 
     # 1. 期限の変換
-  @task.due_date = case tp[:due_date]
-                    when "today" then Date.current
-                    when "tomorrow" then Date.tomorrow
-                    when "later" then Date.current + 2.days
-                    else @task.due_date # masterからの場合は入力値を活かす
-                    end
+    @task.due_date = case tp[:due_date]
+                     when 'today' then Date.current
+                     when 'tomorrow' then Date.tomorrow
+                     when 'later' then Date.current + 2.days
+                     else @task.due_date # masterからの場合は入力値を活かす
+                     end
 
     # 2. ソースの変換
     @task.source_type = case tp[:source_type]
-                        when "Slack" then 0
-                        when "会議"   then 1
-                        when "メール" then 2
+                        when 'Slack' then 0
+                        when '会議' then 1
+                        when 'メール' then 2
                         else @task.source_type # masterからの場合はそのまま
                         end
 
     # 3. 一般タスク登録（master以外）の場合のデフォルト設定
     unless @task.is_routine
-      @task.priority ||= "B"
+      @task.priority ||= 'B'
       @task.is_today = true
     end
 
     if @task.save
       respond_to do |format|
         # ここがポイント：is_routine なら master 画面へ、そうでなければ index へ戻す
-        format.html { 
-          redirect_to (@task.is_routine ? master_tasks_path : tasks_path)
-        }
+        format.html do
+          redirect_to(@task.is_routine ? master_tasks_path : tasks_path)
+        end
         format.turbo_stream
       end
     else
-      Rails.logger.debug "--- Task Save Error ---"
+      Rails.logger.debug '--- Task Save Error ---'
       Rails.logger.debug @task.errors.full_messages
       # 4. 失敗時：再表示に必要なデータを両方準備しておく
       # 1. 現在表示中の日付を特定する（フォームから送られてきた日付、なければ昨日）
-    @selected_date = params[:selected_date].present? ? params[:selected_date].to_date : Date.yesterday
-    # 2. その日付に基づいた「完了済みログ」を取得（これで表示が勝手に切り替わらない）
-    @archived_tasks = current_user.tasks.where(archived: true).where(completed_at: @selected_date.all_day)
+      @selected_date = params[:selected_date].present? ? params[:selected_date].to_date : Date.yesterday
+      # 2. その日付に基づいた「完了済みログ」を取得（これで表示が勝手に切り替わらない）
+      @archived_tasks = current_user.tasks.where(archived: true).where(completed_at: @selected_date.all_day)
       @routine_tasks = current_user.tasks.where(is_routine: true).order(:id)
       @tasks = current_user.tasks.where(archived: false, is_routine: false).order(created_at: :desc)
       @today_tasks = current_user.tasks
-                             .where(archived: false)
-                             .where("due_date <= ?", Date.today)
-                             .order(priority: :asc)
+                                 .where(archived: false)
+                                 .where('due_date <= ?', Date.today)
+                                 .order(priority: :asc)
       @yesterday_archived_tasks = current_user.tasks
-                  .where(archived: true)
-                  .where("completed_at < ?", Time.zone.now.beginning_of_day) # 今日の0:00より前
-                  .where("completed_at >= ?", Time.zone.now.yesterday.beginning_of_day) # 昨日の0:00以降
-                  .order(completed_at: :desc)
-      
+                                              .where(archived: true)
+                                              .where('completed_at < ?', Time.zone.now.beginning_of_day) # 今日の0:00より前
+                                              .where('completed_at >= ?', Time.zone.now.yesterday.beginning_of_day) # 昨日の0:00以降
+                                              .order(completed_at: :desc)
+
       # どちらの画面から来たかによって戻り先を変える
-     view_target = case params[:from_view]
-                    when "morning" then :morning
-                    when "master"  then :master
+      view_target = case params[:from_view]
+                    when 'morning' then :morning
+                    when 'master'  then :master
                     else :index
                     end
 
@@ -126,68 +125,62 @@ def create
 
   # タスクの完了・更新アクション
   def update
-    if @task.update(task_params)
-      # アーカイブされた場合は完了時間を記録
-      @task.update(completed_at: Time.current) if @task.archived? && @task.completed_at.nil?
+    return unless @task.update(task_params)
 
-      respond_to do |format|
-        format.html { redirect_to tasks_path }
-        # Turbo Stream: 画面からタスクを消去し、アーカイブへ移動させる
-        format.turbo_stream
-      end
+    # アーカイブされた場合は完了時間を記録
+    @task.update(completed_at: Time.current) if @task.archived? && @task.completed_at.nil?
+
+    respond_to do |format|
+      format.html { redirect_to tasks_path }
+      # Turbo Stream: 画面からタスクを消去し、アーカイブへ移動させる
+      format.turbo_stream
     end
   end
 
   def archive
     @task.update(archived: true, completed_at: Time.current)
 
-  respond_to do |format|
-    format.html { redirect_to tasks_path }
-    format.turbo_stream # これが必要！
-  end
-end
-
-def update_status
-  @task = current_user.tasks.find(params[:id])
-  new_status = params[:status]
-
-  # ステータスを更新
-  @task.status = new_status
-  
-  # もし「完了(done)」が選ばれたら、自動的にアーカイブフラグも立てる
-  if new_status == "done"
-    @task.archived = true
-  else
-    # 「未着手」「進行中」に戻されたらアーカイブを解除する
-    @task.archived = false
+    respond_to do |format|
+      format.html { redirect_to tasks_path }
+      format.turbo_stream # これが必要！
+    end
   end
 
-  if @task.save
+  def update_status
+    @task = current_user.tasks.find(params[:id])
+    new_status = params[:status]
+
+    # ステータスを更新
+    @task.status = new_status
+
+    # もし「完了(done)」が選ばれたら、自動的にアーカイブフラグも立てる
+    @task.archived = new_status == 'done'
+
+    return unless @task.save
+
     # Turbo Streamで画面の一部だけを書き換える（今のルーチンと同じ動き）
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to root_path }
     end
   end
-end
 
-def master
-  # 日常業務だけを取得
-  @routine_tasks = current_user.tasks.where(is_routine: true).order(:id)
-  # 新規登録用（最初から is_routine を true にしておくのがコツ！）
-  @task = current_user.tasks.build(is_routine: true)
-end
-
-def destroy
-  @task = current_user.tasks.find(params[:id])
-  @task.destroy
-
-  respond_to do |format|
-    format.turbo_stream # 削除した瞬間に画面から消す命令を送る
-    format.html { redirect_to master_tasks_path, notice: "削除しました" }
+  def master
+    # 日常業務だけを取得
+    @routine_tasks = current_user.tasks.where(is_routine: true).order(:id)
+    # 新規登録用（最初から is_routine を true にしておくのがコツ！）
+    @task = current_user.tasks.build(is_routine: true)
   end
-end
 
+  def destroy
+    @task = current_user.tasks.find(params[:id])
+    @task.destroy
+
+    respond_to do |format|
+      format.turbo_stream # 削除した瞬間に画面から消す命令を送る
+      format.html { redirect_to master_tasks_path, notice: '削除しました' }
+    end
+  end
 
   private
 
@@ -198,5 +191,4 @@ end
   def task_params
     params.require(:task).permit(:title, :memo, :due_date, :source_type, :priority, :is_today, :archived, :is_routine, :status)
   end
-
 end
