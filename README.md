@@ -179,9 +179,3 @@ bundle exec rspec
 
 ---
 
-## URL
-
-(https://director-assistant-2.onrender.com)
-
----
-
